@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ティッシュペーパー比較ツール（改良版）</title>
+<style>
+  body { font-family: "Segoe UI", sans-serif; background: #fafafa; padding: 20px; }
+  h2 { color: #333; }
+  .box { background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+  input { width: 100px; padding: 4px; margin: 2px; text-align: right; }
+  button { padding: 8px 16px; border: none; border-radius: 8px; background: #007bff; color: white; cursor: pointer; }
+  button:hover { background: #005fcc; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+</style>
+</head>
+<body>
+<h2>ティッシュペーパー 他社比較ツール（改良版）</h2>
+
+<div class="box">
+  <h3>製品①</h3>
+  組：<input id="set1" type="number" value="150">　
+  パック：<input id="pack1" type="number" value="100">　
+  縦(cm)：<input id="height1" type="number" value="18.3">　
+  横(cm)：<input id="width1" type="number" value="20">　
+  価格(円)：<input id="price1" type="number" value="5422">
+</div>
+
+<div class="box">
+  <h3>製品②</h3>
+  組：<input id="set2" type="number" value="160">　
+  パック：<input id="pack2" type="number" value="90">　
+  縦(cm)：<input id="height2" type="number" value="19">　
+  横(cm)：<input id="width2" type="number" value="20">　
+  価格(円)：<input id="price2" type="number" value="5980">
+</div>
+
+<button onclick="compare()">比較する</button>
+
+<table id="result">
+  <tr><th>製品</th><th>総面積(㎡)</th><th>1円あたり(㎡)</th><th>1円あたり(枚)</th></tr>
+</table>
+
+<script>
+function calc(set, pack, h, w, price) {
+  // cm → m
+  let area = (h / 100) * (w / 100);
+  // 総面積
+  let total = 2 * set * pack * area;
+  // 1円あたりの面積
+  let perYenArea = total / price;
+  // 1円あたりの枚数
+  let perYenSheets = perYenArea / area;
+  return { total, perYenArea, perYenSheets };
+}
+
+function compare() {
+  const data1 = calc(
+    +set1.value, +pack1.value, +height1.value, +width1.value, +price1.value
+  );
+  const data2 = calc(
+    +set2.value, +pack2.value, +height2.value, +width2.value, +price2.value
+  );
+
+  const fmt = n => n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+  result.innerHTML = `
+    <tr><th>製品</th><th>総面積(㎡)</th><th>1円あたり(㎡)</th><th>1円あたり(枚)</th></tr>
+    <tr><td>①</td><td>${fmt(data1.total)}</td><td>${fmt(data1.perYenArea)}</td><td>${fmt(data1.perYenSheets)}</td></tr>
+    <tr><td>②</td><td>${fmt(data2.total)}</td><td>${fmt(data2.perYenArea)}</td><td>${fmt(data2.perYenSheets)}</td></tr>
+  `;
+}
+</script>
+</body>
+</html>
